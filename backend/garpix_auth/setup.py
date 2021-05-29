@@ -1,8 +1,15 @@
 from setuptools import setup, find_packages
+from os import path
+
+
+here = path.join(path.abspath(path.dirname(__file__)), 'garpix_auth')
+
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='garpix-auth',
-    version='1.0.0',
+    version='1.0.1',
     description='',
     author='Garpix LTD',
     author_email='info@garpix.com',
