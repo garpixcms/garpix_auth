@@ -20,6 +20,20 @@ env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, '..', 'public', 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'public', 'media')
+
+TEMPLATES_PATH = os.path.join(BASE_DIR, '..', 'frontend', 'templates')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, '..', 'frontend', 'static'),
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -68,7 +82,9 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            TEMPLATES_PATH
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,22 +146,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, '..', 'public', 'static')
-MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'public', 'media')
-
-TEMPLATES_PATH = os.path.join(BASE_DIR, '..', 'frontend', 'templates')
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '..', 'frontend', 'static'),
-]
 
 # garpix_auth
 

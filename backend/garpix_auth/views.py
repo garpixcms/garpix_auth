@@ -1,8 +1,12 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic.base import RedirectView
+from django.views.generic import FormView
+from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
+from .forms import LoginForm
 
 
 class LogoutView(RedirectView):
@@ -11,15 +15,27 @@ class LogoutView(RedirectView):
         return self.url
 
 
-class LoginView(TemplateView):
-    def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+class LoginView(FormView):
+    @staticmethod
+    def get_form_class(**kwargs):
+        return LoginForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def form_valid(self, form):
+        request = self.request
+        data = form.data
+        username = data.get('username')
+        password = data.get('password')
         user = authenticate(request, username=username, password=password)
-        if user and user.is_active:
-            login(request, user)
+        login(request, user)
+        if self.request.accepts('text/html'):
             return redirect(request.GET.get('next', '/'))
-            # return JsonResponse({'success': True})
-        elif user and not user.is_active:
-            return JsonResponse({'detail': _('User is inactive. You must confirm the registration email address at registration.')}, status=400)
-        return JsonResponse({'detail': _('Invalid: username / password')}, status=403)
+        return JsonResponse({'success': True})
+
+    def form_invalid(self, form):
+        if self.request.accepts('text/html'):
+            return self.render_to_response(self.get_context_data(form=form))
+        return HttpResponse(json.dumps(form.errors), content_type='application/json', status=400)
