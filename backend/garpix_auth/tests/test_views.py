@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 
-class LoginViewTestCase(TestCase):
+class LoginViewTest(TestCase):
     def setUp(self):
         self.username = 'testuser1'
         self.password = '12345'
@@ -11,7 +11,7 @@ class LoginViewTestCase(TestCase):
 
     def test_invalid_username_password(self):
         response = self.client.post(
-            '/login/',  
+            '/login/',
             {
                 'username': self.username,
                 'password': 'passwordtest',
@@ -22,21 +22,21 @@ class LoginViewTestCase(TestCase):
 
     def test_valid_username_password(self):
         response = self.client.post(
-            '/login/', 
+            '/login/',
             {
                 'username': self.username,
                 'password': self.password,
-            }, 
+            },
             HTTP_ACCEPT='application/json'
         )
         self.assertEqual(response.status_code, 200)
 
     def test_valid_redirects(self):
         response = self.client.post(
-            '/login/', 
+            '/login/',
             {
                 'username': self.username,
                 'password': self.password,
-            }, 
+            },
         )
         self.assertRedirects(response, '/')

@@ -5,7 +5,6 @@ from django.shortcuts import redirect
 from django.views.generic.base import RedirectView
 from django.views.generic import FormView
 from django.http import HttpResponse
-from django.utils.translation import gettext_lazy as _
 from .forms import LoginForm
 
 

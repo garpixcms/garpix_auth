@@ -14,7 +14,7 @@ class LoginForm(forms.Form):
 
         if not user:
             raise forms.ValidationError('User is not found')
-        
+
         if user and not user.is_active:
             raise forms.ValidationError('User is inactive. You must confirm the registration email address at registration.')
 
