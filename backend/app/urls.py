@@ -25,5 +25,5 @@ urlpatterns = [
     # garpix_auth
     path('logout/', LogoutView.as_view(url='/'), name="logout"),
     path('login/', LoginView.as_view(template_name="accounts/login.html"), name="authorize"),
-    path('token-auth/', obtain_auth_token),
+    path('api/login/', obtain_auth_token),
 ]

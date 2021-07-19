@@ -108,7 +108,7 @@ from garpix_auth.rest.obtain_auth_token import obtain_auth_token
 
 urlpatterns = [
     # ...
-    path('token-auth/', obtain_auth_token),
+    path('api/login/', obtain_auth_token),
     # ...
 ]
 ```
