@@ -1,2 +1,2 @@
 from .backend import CustomAuthenticationBackend  # noqa
-from .refresh_token import RefreshToken
+from .refresh_token import RefreshToken  # noqa
