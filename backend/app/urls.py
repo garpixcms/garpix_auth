@@ -14,16 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from .views import HomeView
+from django.urls import path, include
+from .views import HomeView, CurrentUserView
 from garpix_auth.views import LogoutView, LoginView
-from garpix_auth.rest.obtain_auth_token import obtain_auth_token
 
 urlpatterns = [
     path('', HomeView.as_view()),
     path('admin/', admin.site.urls),
+    path('api/current-user/', CurrentUserView.as_view(), name='current-user'),
     # garpix_auth
     path('logout/', LogoutView.as_view(url='/'), name="logout"),
     path('login/', LoginView.as_view(template_name="accounts/login.html"), name="authorize"),
-    path('api/login/', obtain_auth_token),
+    path('api/auth/', include(('garpix_auth.urls', 'garpix_auth'), namespace='garpix_auth')),
 ]

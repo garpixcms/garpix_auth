@@ -147,14 +147,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 # garpix_auth
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'garpix_auth.rest.authentication.MainAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
-    }
+    )
 }
 
 AUTHENTICATION_BACKENDS = (
@@ -181,3 +183,12 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details'
 )
+
+# GARPIX_ACCESS_TOKEN_TTL_SECONDS = 86400  # 24 hours
+GARPIX_ACCESS_TOKEN_TTL_SECONDS = 0  # infinity
+# GARPIX_ACCESS_TOKEN_TTL_SECONDS = 86400 * 14  # 14 days
+GARPIX_REFRESH_TOKEN_TTL_SECONDS = 0  # infinity
+
+MIGRATION_MODULES = {
+    'garpix_auth': 'app.migrations.garpix_auth',
+}

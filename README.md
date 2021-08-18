@@ -104,14 +104,16 @@ SOCIAL_AUTH_PIPELINE = (
 Add to `urls.py`:
 
 ```
-from garpix_auth.rest.obtain_auth_token import obtain_auth_token
+from django.urls import path, include
 
 urlpatterns = [
     # ...
-    path('api/login/', obtain_auth_token),
+    path('api/auth/', include(('garpix_auth.urls', 'garpix_auth'), namespace='garpix_auth')),
     # ...
 ]
 ```
+
+See `garpix_auth/tests/test_api.py` for examples.
 
 # Changelog
 
