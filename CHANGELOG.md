@@ -1,3 +1,7 @@
+### 2.0.1 (19.08.2021)
+
+- Добавлен permission `IsAuthenticated` для `LogoutView`. 
+
 ### 2.0.0 (18.08.2021)
 
 - Изменен keyword с `Token` на более правильный - `Bearer` (см. https://datatracker.ietf.org/doc/html/rfc6750#section-1.2).

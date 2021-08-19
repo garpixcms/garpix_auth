@@ -4,11 +4,12 @@ from oauth2_provider.models import AccessToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from ..models.refresh_token import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 
 
 class LogoutView(APIView):
     throttle_classes = ()
-    permission_classes = ()
+    permission_classes = (IsAuthenticated,)
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
     renderer_classes = (renderers.JSONRenderer,)
 
