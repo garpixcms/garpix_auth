@@ -3,10 +3,11 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
+from .utils import get_token_from_request
 
 
 def get_user_by_token(token):
-    from rest_framework.authtoken.models import Token
+    from ..models.access_token import AccessToken as Token
     from oauth2_provider.models import AccessToken
     User = get_user_model()
 
@@ -41,11 +42,9 @@ class MainAuthentication(TokenAuthentication):
     keyword = 'Bearer'
 
     def authenticate(self, request):
-        if 'HTTP_AUTHORIZATION' not in request.META:
+        token = get_token_from_request(request, keyword=self.keyword)
+        if token is None:
             return None
-
-        token = request.META['HTTP_AUTHORIZATION']
-        token = token[len(self.keyword) + 1:]
 
         user = get_user_by_token(token)
         if user is not None:

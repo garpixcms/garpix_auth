@@ -1,12 +1,10 @@
 from rest_framework import parsers, renderers
-from rest_framework.authtoken.models import Token
+from ..models.access_token import AccessToken as Token
 from .auth_token_serializer import AuthTokenSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
 from ..models.refresh_token import RefreshToken
-from datetime import timedelta
-from django.utils import timezone
 
 
 class ObtainAuthToken(APIView):
@@ -21,16 +19,8 @@ class ObtainAuthToken(APIView):
                                            context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        refresh_token, created_refresh_token = RefreshToken.objects.get_or_create(user=user)
-        if not created:
-            if settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS > 0:
-                if token.created + timedelta(seconds=settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS) < timezone.now():
-                    token.delete()
-                    token, created = Token.objects.get_or_create(user=user)
-                    if not created_refresh_token:
-                        RefreshToken.objects.filter(user=user).delete()
-                        refresh_token, created_refresh_token = RefreshToken.objects.get_or_create(user=user)
+        token = Token.objects.create(user=user)
+        refresh_token = RefreshToken.objects.create(user=user)
         return Response({
             'access_token': token.key,
             'refresh_token': refresh_token.key,

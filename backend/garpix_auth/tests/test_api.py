@@ -114,7 +114,7 @@ class LoginApiTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('access_token', response.json())
         access_token2 = response.json()['access_token']
-        self.assertEqual(access_token1, access_token2)
+        self.assertNotEqual(access_token1, access_token2)
         # get protected view
         response = self.client.get(reverse('current-user'), HTTP_ACCEPT='application/json', HTTP_AUTHORIZATION=f'Bearer {access_token2}')
         self.assertDictEqual(response.json(), {'username': self.username})

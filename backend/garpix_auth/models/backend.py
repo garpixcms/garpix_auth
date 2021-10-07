@@ -5,7 +5,7 @@ from django.db.models import Q
 class CustomAuthenticationBackend:
     def authenticate(self, request, username=None, password=None):
         try:
-            user = get_user_model().objects.get(Q(phone=username.lower()) | Q(username=username))
+            user = get_user_model().objects.get(Q(phone=username) | Q(username=username.lower()))
             pwd_valid = user.check_password(password)
             if pwd_valid:
                 return user

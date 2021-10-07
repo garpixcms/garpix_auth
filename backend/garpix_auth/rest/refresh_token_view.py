@@ -1,5 +1,5 @@
 from rest_framework import parsers, renderers
-from rest_framework.authtoken.models import Token
+from ..models.access_token import AccessToken as Token
 from .refresh_token_serializer import RefreshTokenSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,10 +25,8 @@ class RefreshTokenView(APIView):
             if settings.GARPIX_REFRESH_TOKEN_TTL_SECONDS > 0:
                 if refresh_token_obj.created + timedelta(seconds=settings.GARPIX_REFRESH_TOKEN_TTL_SECONDS) < timezone.now():
                     refresh_token_obj.delete()
-                    Token.objects.filter(user=refresh_token_obj.user).delete()
                     raise Exception("Token expired.")
-            Token.objects.filter(user=refresh_token_obj.user).update(created=timezone.now())
-            token, created = Token.objects.get_or_create(user=refresh_token_obj.user)
+            token = Token.objects.create(user=refresh_token_obj.user)
             return Response({
                 'access_token': token.key,
                 'access_token_expires': settings.GARPIX_ACCESS_TOKEN_TTL_SECONDS,
