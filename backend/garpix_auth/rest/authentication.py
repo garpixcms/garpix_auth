@@ -1,5 +1,6 @@
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
@@ -35,7 +36,7 @@ def get_user_by_token(token):
     except: # noqa
         pass
 
-    return None
+    return AnonymousUser()
 
 
 class MainAuthentication(TokenAuthentication):
@@ -47,6 +48,4 @@ class MainAuthentication(TokenAuthentication):
             return None
 
         user = get_user_by_token(token)
-        if user is not None:
-            return user, None
-        return None
+        return user, None
