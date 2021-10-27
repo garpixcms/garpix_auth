@@ -1,2 +1,2 @@
-from .email_confirmation_viewset import EmailConfirmationViewSet
-from .phone_confirmation_viewset import PhoneConfirmationViewSet
+from .email_confirmation_viewset import EmailConfirmationViewSet  # noqa
+from .phone_confirmation_viewset import PhoneConfirmationViewSet  # noqa

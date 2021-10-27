@@ -1,2 +1,2 @@
-from .phone_confirm import PhoneConfirm
-from .email_confirm import EmailConfirm
+from .phone_confirm import PhoneConfirm  # noqa
+from .email_confirm import EmailConfirm  # noqa

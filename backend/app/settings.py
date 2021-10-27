@@ -14,8 +14,8 @@ import os
 from pathlib import Path
 from environs import Env
 
-from garpix_auth.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM
-from garpix_auth.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM
+from garpix_auth.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM  # noqa
+from garpix_auth.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
 
 env = Env()
 env.read_env()

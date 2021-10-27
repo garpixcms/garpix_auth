@@ -3,7 +3,6 @@ from datetime import datetime, timezone
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.utils.html import format_html
 from garpix_notify.models import Notify
 from garpix_utils.string import get_random_string
 import string
@@ -32,7 +31,6 @@ class UserEmailConfirmMixin(models.Model):
         anybody_have_this_email = User.objects.filter(email=email, is_email_confirmed=True).count() > 0
 
         if not anybody_have_this_email.exists() or anybody_have_this_email == self:
-
             confirmation_code = get_random_string(settings.GARPIX_CONFIRM_CODE_LENGTH, string.digits)
 
             self.new_email = email
@@ -49,8 +47,7 @@ class UserEmailConfirmMixin(models.Model):
     def check_confirmation_code(self, email_confirmation_code):
 
         time_is_up = (datetime.now(
-            timezone.utc) - self.updated_at).seconds / 60 > (
-                         settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME)
+            timezone.utc) - self.updated_at).seconds / 60 > settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME
 
         if time_is_up:
             return {"result": False, "message": "Code has expired"}
@@ -114,8 +111,7 @@ class EmailConfirm(models.Model):
             return {"result": False, "message": "Code or email is incorrect"}
 
         time_is_up = (datetime.now(
-            timezone.utc) - email_confirmation_instance.updated_at).seconds / 60 > (
-                         settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME)
+            timezone.utc) - email_confirmation_instance.updated_at).seconds / 60 > settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME
 
         if time_is_up:
             return {"result": False, "message": "Code has expired"}

@@ -1,1 +1,1 @@
-from .not_authenticated import NotAuthenticated
+from .not_authenticated import NotAuthenticated  # noqa
