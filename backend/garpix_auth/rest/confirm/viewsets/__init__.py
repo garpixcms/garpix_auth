@@ -1,0 +1,2 @@
+from .email_confirmation_viewset import EmailConfirmationViewSet
+from .phone_confirmation_viewset import PhoneConfirmationViewSet

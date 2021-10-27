@@ -20,3 +20,39 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details'
 )
+
+PHONE_CONFIRMATION_EVENT = 2021
+EMAIL_CONFIRMATION_EVENT = 2022
+EMAIL_CONFIRMATION_BY_LINK_EVENT = 2023
+
+PHONE_CONFIRMATION_EVENT_ITEM = {
+    PHONE_CONFIRMATION_EVENT: {
+        'title': 'Подтверждение номера телефона',
+        'context_description': '{{ confirmation_code }}'
+    }
+}
+
+EMAIL_CONFIRMATION_EVENT_ITEM = {
+    EMAIL_CONFIRMATION_EVENT: {
+        'title': 'Подтверждение email',
+        'context_description': '{{ confirmation_code }}'
+    }
+}
+
+EMAIL_CONFIRMATION__BY_LINK_EVENT_ITEM = {
+    EMAIL_CONFIRMATION_BY_LINK_EVENT: {
+        'title': 'Подтверждение email по ссылке',
+        'context_description': '{{ link }}'
+    }
+}
+
+
+GARPIX_CONFIRM_CODE_LENGTH = 6
+GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME = 5  # in minutes
+GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
+
+GARPIX_CONFIRM_EMAIL_LINK_LENGTH = 64
+
+GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = True
+
+GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = True
