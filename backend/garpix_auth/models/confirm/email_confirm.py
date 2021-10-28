@@ -18,6 +18,7 @@ class UserEmailConfirmMixin(models.Model):
     """
     Миксин для подтверждения email после регистрации
     """
+    email = models.EmailField(unique=True, verbose_name="Email")
     is_email_confirmed = models.BooleanField(default=False, verbose_name="Email подтвержден")
     email_confirmation_code = models.CharField(max_length=15, verbose_name='Код подтверждения email',
                                                blank=True, default='')
@@ -47,7 +48,7 @@ class UserEmailConfirmMixin(models.Model):
     def check_confirmation_code(self, email_confirmation_code):
 
         time_is_up = (datetime.now(
-            timezone.utc) - self.updated_at).seconds / 60 > settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME
+            timezone.utc) - self.updated_at).days > settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME
 
         if time_is_up:
             return {"result": False, "message": "Code has expired"}

@@ -1,9 +1,9 @@
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from garpix_auth.models import EmailConfirm
+from garpix_auth.models.confirm import EmailConfirm
 from garpix_auth.rest.confirm.permissions import NotAuthenticated
 from garpix_auth.rest.confirm.serializers.email_confirmation_serializer import (EmailConfirmSendSerializer,
                                                                                 EmailConfirmCheckCodeSerializer,

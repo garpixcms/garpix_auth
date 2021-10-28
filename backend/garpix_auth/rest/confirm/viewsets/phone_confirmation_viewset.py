@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from garpix_auth.models import PhoneConfirm
+from garpix_auth.models.confirm import PhoneConfirm
 from garpix_auth.rest.confirm.permissions import NotAuthenticated
 from garpix_auth.rest.confirm.serializers.phone_confirmation_serializer import (PhoneConfirmSendSerializer,
                                                                                 PhoneConfirmCheckCodeSerializer,
