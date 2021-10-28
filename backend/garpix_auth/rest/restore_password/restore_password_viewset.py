@@ -12,7 +12,7 @@ from garpix_auth.rest.restore_password.restore_passwrod_serializer import (Resto
 User = get_user_model()
 
 
-class EmailConfirmationViewSet(viewsets.ViewSet):
+class RestorePasswordViewSet(viewsets.ViewSet):
 
     @action(methods=['POST'], detail=False)
     def restore_password(self, request, *args, **kwargs):
