@@ -67,7 +67,7 @@ class PhoneConfirm(models.Model):
     """
     Модель для подтверждения номера телефона до регистрации
     """
-    phone = PhoneNumberField(unique=True, blank=True, default='', verbose_name="Телефон")
+    phone = PhoneNumberField(unique=True, verbose_name="Телефон")
     is_phone_confirmed = models.BooleanField(default=False, verbose_name="Номер телефона подтвержден")
     phone_confirmation_code = models.CharField(max_length=15, verbose_name='Код подтверждения номера телефона')
     token = models.CharField(max_length=40, verbose_name="Токен")

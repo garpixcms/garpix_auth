@@ -5,6 +5,11 @@ from rest_framework.response import Response
 
 from garpix_auth.models import EmailConfirm
 from garpix_auth.rest.confirm.permissions import NotAuthenticated
+from garpix_auth.rest.confirm.serializers.email_confirmation_serializer import (EmailConfirmSendSerializer,
+                                                                                EmailConfirmCheckCodeSerializer,
+                                                                                EmailPreConfirmCheckCodeSerializer,
+                                                                                EmailPreConfirmCheckSerializer,
+                                                                                EmailPreConfirmSendSerializer)
 
 User = get_user_model()
 
@@ -13,28 +18,35 @@ class EmailConfirmationViewSet(viewsets.ViewSet):
 
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
-        email = request.data.get('email', None)
         user = request.user
-        if authenticate(user) is not None:
+        if user.is_authenticated:
+            serializer = EmailConfirmSendSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            email = request.data('email', None)
             result = user.send_confirmation_code(email)
         else:
-            result = EmailConfirm().send_confirmation_code(email)
+            serializer = EmailPreConfirmSendSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            result = EmailConfirm().send_confirmation_code(serializer.data['email'])
         return Response(result)
 
     @action(methods=['POST'], detail=False)
     def check_code(self, request, *args, **kwargs):
-        email = request.data.get('email', None)
-        confirm_code = request.data.get('email_confirmation_code', None)
         user = request.user
-        if authenticate(user) is not None:
-            result = user.check_confirmation_code(confirm_code)
+        if user.is_authenticated:
+            serializer = EmailConfirmCheckCodeSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            result = user.check_confirmation_code(serializer.data['email_confirmation_code'])
         else:
-            result = EmailConfirm().check_confirmation_code(email, confirm_code)
+            serializer = EmailPreConfirmCheckCodeSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            result = EmailConfirm().check_confirmation_code(serializer.data['email'],
+                                                            serializer.data['email_confirmation_code'])
         return Response(result)
 
     @action(methods=["POST"], detail=False, permission_classes=(NotAuthenticated,))
     def check_confirmation(self, request, *args, **kwargs):
-        token = request.data.get('token')
-        email = request.data.get('email')
-        result = EmailConfirm().check_confirmation(email, token)
+        serializer = EmailPreConfirmCheckSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = EmailConfirm().check_confirmation(serializer.data['email'], serializer.data['token'])
         return Response(result)
