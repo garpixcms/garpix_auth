@@ -18,11 +18,10 @@ class UserEmailConfirmMixin(models.Model):
     """
     Миксин для подтверждения email после регистрации
     """
-    email = models.EmailField(unique=True, verbose_name="Email")
     is_email_confirmed = models.BooleanField(default=False, verbose_name="Email подтвержден")
     email_confirmation_code = models.CharField(max_length=15, verbose_name='Код подтверждения email',
                                                blank=True, default='')
-    new_email = models.EmailField(unique=True, blank=True, default='', verbose_name="Новый email")
+    new_email = models.EmailField(blank=True, default='', verbose_name="Новый email")
 
     def send_confirmation_code(self, email=None):
 

@@ -14,7 +14,6 @@ class RestorePasswordMixin(models.Model):
     restore_password_confirm_code_phone = models.CharField(
         max_length=15, verbose_name='Код сброса пароля по телефону', default='', blank=True)
 
-    email = models.EmailField(_('email address'), blank=True, unique=True)
     restore_password_confirm_code_email = models.CharField(
         max_length=15, verbose_name='Код сброса пароля по почте', default='', blank=True)
 
@@ -79,7 +78,8 @@ class RestorePasswordMixin(models.Model):
             if time_is_up:
                 return {"result": False, "message": "Code has expired"}
 
-        user.password = new_password
+        user.set_password(new_password)
+        user.new_password = ''  # чтоб не хранить в открытом виде пароль
         user.save()
 
         return {"result": True, "message": "password was successfully updated"}
