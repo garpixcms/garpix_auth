@@ -131,8 +131,8 @@ class PhoneConfirm(models.Model):
          метод проверяет, подтвержден ли номер телефона пользователем
          """
         if cls.objects.filter(phone=phone, is_phone_confirmed=True, token=token).first():
-            return {"result": True}
-        return {"result": False}
+            return True
+        return False
 
     class Meta:
         verbose_name = 'Код подтверждения по смс'

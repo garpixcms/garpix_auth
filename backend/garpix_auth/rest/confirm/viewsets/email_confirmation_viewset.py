@@ -5,11 +5,9 @@ from rest_framework.response import Response
 
 from garpix_auth import settings
 from garpix_auth.models.confirm import EmailConfirm
-from garpix_auth.rest.confirm.permissions import NotAuthenticated
 from garpix_auth.rest.confirm.serializers.email_confirmation_serializer import (EmailConfirmSendSerializer,
                                                                                 EmailConfirmCheckCodeSerializer,
                                                                                 EmailPreConfirmCheckCodeSerializer,
-                                                                                EmailPreConfirmCheckSerializer,
                                                                                 EmailPreConfirmSendSerializer)
 
 User = get_user_model()
@@ -20,9 +18,7 @@ class EmailConfirmationViewSet(viewsets.ViewSet):
     def get_serializer_class(self):
         if self.action == 'send_code':
             return EmailConfirmSendSerializer
-        if self.action == 'check_code':
-            return EmailPreConfirmCheckCodeSerializer
-        return EmailPreConfirmCheckSerializer
+        return EmailPreConfirmCheckCodeSerializer
 
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
@@ -58,11 +54,4 @@ class EmailConfirmationViewSet(viewsets.ViewSet):
                                                                 serializer.data['email_confirmation_code'])
             else:
                 return Response({'Учетные данные не были предоставлены'}, status=401)
-        return Response(result)
-
-    @action(methods=["POST"], detail=False, permission_classes=(NotAuthenticated,))
-    def check_confirmation(self, request, *args, **kwargs):
-        serializer = EmailPreConfirmCheckSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        result = EmailConfirm().check_confirmation(serializer.data['email'], serializer.data['token'])
         return Response(result)

@@ -5,11 +5,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from garpix_auth.models.confirm import PhoneConfirm
-from garpix_auth.rest.confirm.permissions import NotAuthenticated
 from garpix_auth.rest.confirm.serializers.phone_confirmation_serializer import (PhoneConfirmSendSerializer,
                                                                                 PhoneConfirmCheckCodeSerializer,
                                                                                 PhonePreConfirmCheckCodeSerializer,
-                                                                                PhonePreConfirmCheckSerializer,
                                                                                 PhonePreConfirmSendSerializer)
 
 User = get_user_model()
@@ -20,9 +18,7 @@ class PhoneConfirmationViewSet(viewsets.ViewSet):
     def get_serializer_class(self):
         if self.action == 'send_code':
             return PhoneConfirmSendSerializer
-        if self.action == 'check_code':
-            return PhonePreConfirmCheckCodeSerializer
-        return PhonePreConfirmCheckSerializer
+        return PhonePreConfirmCheckCodeSerializer
 
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
@@ -58,11 +54,4 @@ class PhoneConfirmationViewSet(viewsets.ViewSet):
                                                                 serializer.data['phone_confirmation_code'])
             else:
                 return Response({'Учетные данные не были предоставлены'}, status=401)
-        return Response(result)
-
-    @action(methods=["POST"], detail=False, permission_classes=(NotAuthenticated,))
-    def check_confirmation(self, request, *args, **kwargs):
-        serializer = PhonePreConfirmCheckSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        result = PhoneConfirm().check_confirmation(serializer.data['phone'], serializer.data['token'])
         return Response(result)

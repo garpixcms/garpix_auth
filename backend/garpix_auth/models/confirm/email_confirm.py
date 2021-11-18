@@ -131,8 +131,8 @@ class EmailConfirm(models.Model):
          метод проверяет, подтвержден ли email пользователем
          """
         if cls.objects.filter(email=email, is_email_confirmed=True, token=token).first():
-            return {"result": True}
-        return {"result": False}
+            return True
+        return False
 
     class Meta:
         verbose_name = 'Код подтверждения по email'

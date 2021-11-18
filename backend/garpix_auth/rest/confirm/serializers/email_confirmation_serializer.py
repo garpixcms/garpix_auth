@@ -16,8 +16,3 @@ class EmailPreConfirmSendSerializer(serializers.Serializer):
 class EmailPreConfirmCheckCodeSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     email_confirmation_code = serializers.CharField(max_length=15)
-
-
-class EmailPreConfirmCheckSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-    token = serializers.CharField(max_length=40)
