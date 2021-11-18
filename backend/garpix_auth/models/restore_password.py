@@ -12,10 +12,12 @@ class RestorePasswordMixin(models.Model):
 
     phone = PhoneNumberField(verbose_name=_('Телефон'), max_length=30, blank=True, default='', unique=True)
     restore_password_confirm_code_phone = models.CharField(
-        max_length=15, verbose_name='Код сброса пароля по телефону', default='', blank=True)
+        max_length=15, verbose_name='Код сброса пароля по телефону', null=True, blank=True)
 
     restore_password_confirm_code_email = models.CharField(
-        max_length=15, verbose_name='Код сброса пароля по почте', default='', blank=True)
+        max_length=15, verbose_name='Код сброса пароля по почте', null=True, blank=True)
+
+    new_password = models.CharField(max_length=128, blank=True, null=True, verbose_name="Новый пароль")
 
     class Meta:
         abstract = True
@@ -53,7 +55,7 @@ class RestorePasswordMixin(models.Model):
         return {"result": True}
 
     @classmethod
-    def set_password(cls, restore_value, confirmation_code, new_password, code_type='email'):
+    def set_new_password(cls, restore_value, confirmation_code, new_password, code_type='email'):
 
         if code_type == 'email':
 

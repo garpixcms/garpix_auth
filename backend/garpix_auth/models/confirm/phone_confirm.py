@@ -29,8 +29,8 @@ class UserPhoneConfirmMixin(models.Model):
     phone = PhoneNumberField(unique=True, blank=True, default='', verbose_name="Номер телефона")
     is_phone_confirmed = models.BooleanField(default=False, verbose_name="Номер телефона подтвержден")
     phone_confirmation_code = models.CharField(max_length=15, verbose_name='Код подтверждения номера телефона',
-                                               blank=True, default='')
-    new_phone = PhoneNumberField(unique=True, blank=True, default='', verbose_name="Новый номер телефона")
+                                               blank=True, null=True)
+    new_phone = PhoneNumberField(unique=True, blank=True, null=True, verbose_name="Новый номер телефона")
 
     def send_phone_confirmation_code(self, phone=None):
         if not phone:

@@ -43,9 +43,9 @@ class RestorePasswordViewSet(viewsets.ViewSet):
             value_serializer = RestoreSetPasswordByPhoneSerializer(data=request.data)
             value_serializer.is_valid(raise_exception=True)
 
-        result = User().set_password(restore_value=value_serializer.data['restore_value'],
-                                     confirmation_code=value_serializer.data['confirmation_code'],
-                                     new_password=value_serializer.data['new_password'],
-                                     code_type=common_serializer.data['code_type'])
+        result = User().set_new_password(restore_value=value_serializer.data['restore_value'],
+                                         confirmation_code=value_serializer.data['confirmation_code'],
+                                         new_password=value_serializer.data['new_password'],
+                                         code_type=common_serializer.data['code_type'])
 
         return Response(result)
