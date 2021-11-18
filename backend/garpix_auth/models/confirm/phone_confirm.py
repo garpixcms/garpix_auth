@@ -15,6 +15,13 @@ from uuid import uuid4
 User = get_user_model()
 
 
+CONFIRM_CODE_LENGTH = settings.GARPIX_CONFIRM_CODE_LENGTH if hasattr(settings,
+                                                                     'GARPIX_CONFIRM_CODE_LENGTH') else 6
+
+CONFIRM_PHONE_CODE_LIFE_TIME = settings.GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME if hasattr(settings,
+                                                                                       'GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME') else 6
+
+
 class UserPhoneConfirmMixin(models.Model):
     """
     Миксин для подтверждения номера телефона после регистрации
@@ -25,14 +32,14 @@ class UserPhoneConfirmMixin(models.Model):
                                                blank=True, default='')
     new_phone = PhoneNumberField(unique=True, blank=True, default='', verbose_name="Новый номер телефона")
 
-    def send_confirmation_code(self, phone=None):
+    def send_phone_confirmation_code(self, phone=None):
         if not phone:
             phone = self.phone
 
         anybody_have_this_phone = User.objects.filter(phone=phone, is_phone_confirmed=True).first()
 
         if not anybody_have_this_phone.exists() or anybody_have_this_phone == self:
-            confirmation_code = get_random_string(settings.GARPIX_CONFIRM_CODE_LENGTH, string.digits)
+            confirmation_code = get_random_string(CONFIRM_CODE_LENGTH, string.digits)
             self.new_phone = phone
             self.phone_confirmation_code = confirmation_code
             self.save()
@@ -43,10 +50,10 @@ class UserPhoneConfirmMixin(models.Model):
 
         return {"result": False, "message": "User with such phone number already exists"}
 
-    def check_confirmation_code(self, phone_confirmation_code):
+    def check_phone_confirmation_code(self, phone_confirmation_code):
 
         time_is_up = (datetime.now(
-            timezone.utc) - self.updated_at).seconds / 60 > settings.GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME
+            timezone.utc) - self.updated_at).seconds / 60 > CONFIRM_PHONE_CODE_LIFE_TIME
 
         if time_is_up:
             return {"result": False, "message": "Code has expired"}
@@ -81,7 +88,7 @@ class PhoneConfirm(models.Model):
         if not anybody_have_this_phone:
             phone_confirmation_instance = cls.objects.filter(phone=phone).first() or cls(phone=phone)
 
-            confirmation_code = get_random_string(settings.GARPIX_CONFIRM_CODE_LENGTH, string.digits)
+            confirmation_code = get_random_string(CONFIRM_CODE_LENGTH, string.digits)
             phone_confirmation_instance.phone_confirmation_code = confirmation_code
             phone_confirmation_instance.token = uuid4()
 
@@ -109,7 +116,7 @@ class PhoneConfirm(models.Model):
             return {"result": False, "message": "Code or phone number is incorrect"}
 
         time_is_up = (datetime.now(
-            timezone.utc) - phone_confirmation_instance.updated_at).seconds / 60 > settings.GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME
+            timezone.utc) - phone_confirmation_instance.updated_at).seconds / 60 > CONFIRM_PHONE_CODE_LIFE_TIME
 
         if time_is_up:
             return {"result": False, "message": "Code has expired"}
@@ -130,3 +137,6 @@ class PhoneConfirm(models.Model):
     class Meta:
         verbose_name = 'Код подтверждения по смс'
         verbose_name_plural = 'Коды подтверждения по смс'
+        if not hasattr(settings,
+                       'GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION') or not settings.GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION:
+            abstract = True

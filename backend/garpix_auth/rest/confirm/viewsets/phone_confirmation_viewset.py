@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -14,7 +15,15 @@ from garpix_auth.rest.confirm.serializers.phone_confirmation_serializer import (
 User = get_user_model()
 
 
+
 class PhoneConfirmationViewSet(viewsets.ViewSet):
+
+    def get_serializer_class(self):
+        if self.action == 'send_code':
+            return PhoneConfirmSendSerializer
+        if self.action == 'check_code':
+            return PhonePreConfirmCheckCodeSerializer
+        return PhonePreConfirmCheckSerializer
 
     @action(methods=['POST'], detail=False)
     def send_code(self, request, *args, **kwargs):
@@ -23,11 +32,15 @@ class PhoneConfirmationViewSet(viewsets.ViewSet):
             serializer = PhoneConfirmSendSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             phone = request.data('phone', None)
-            result = user.send_confirmation_code(phone)
+            result = user.send_phone_confirmation_code(phone)
         else:
-            serializer = PhonePreConfirmSendSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            result = PhoneConfirm().send_confirmation_code(serializer.data['phone'])
+            if hasattr(settings,
+                           'GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION:
+                serializer = PhonePreConfirmSendSerializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                result = PhoneConfirm().send_confirmation_code(serializer.data['phone'])
+            else:
+                return Response({'Учетные данные не были предоставлены'}, status=401)
         return Response(result)
 
     @action(methods=['POST'], detail=False)
@@ -36,12 +49,16 @@ class PhoneConfirmationViewSet(viewsets.ViewSet):
         if user.is_authenticated:
             serializer = PhoneConfirmCheckCodeSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            result = user.check_confirmation_code(serializer.data['phone_confirmation_code'])
+            result = user.check_phone_confirmation_code(serializer.data['phone_confirmation_code'])
         else:
-            serializer = PhonePreConfirmCheckCodeSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            result = PhoneConfirm().check_confirmation_code(serializer.data['phone'],
-                                                            serializer.data['phone_confirmation_code'])
+            if hasattr(settings,
+                           'GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION:
+                serializer = PhonePreConfirmCheckCodeSerializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                result = PhoneConfirm().check_confirmation_code(serializer.data['phone'],
+                                                                serializer.data['phone_confirmation_code'])
+            else:
+                return Response({'Учетные данные не были предоставлены'}, status=401)
         return Response(result)
 
     @action(methods=["POST"], detail=False, permission_classes=(NotAuthenticated,))

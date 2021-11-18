@@ -13,6 +13,12 @@ from uuid import uuid4
 
 User = get_user_model()
 
+CONFIRM_CODE_LENGTH = settings.GARPIX_CONFIRM_CODE_LENGTH if hasattr(settings,
+                                                                     'GARPIX_CONFIRM_CODE_LENGTH') else 6
+
+CONFIRM_EMAIL_CODE_LIFE_TIME = settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME if hasattr(settings,
+                                                                                       'GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME') else 6
+
 
 class UserEmailConfirmMixin(models.Model):
     """
@@ -23,7 +29,7 @@ class UserEmailConfirmMixin(models.Model):
                                                blank=True, default='')
     new_email = models.EmailField(blank=True, default='', verbose_name="Новый email")
 
-    def send_confirmation_code(self, email=None):
+    def send_email_confirmation_code(self, email=None):
 
         if not email:
             email = self.email
@@ -31,7 +37,7 @@ class UserEmailConfirmMixin(models.Model):
         anybody_have_this_email = User.objects.filter(email=email, is_email_confirmed=True).count() > 0
 
         if not anybody_have_this_email.exists() or anybody_have_this_email == self:
-            confirmation_code = get_random_string(settings.GARPIX_CONFIRM_CODE_LENGTH, string.digits)
+            confirmation_code = get_random_string(CONFIRM_CODE_LENGTH, string.digits)
 
             self.new_email = email
             self.email_confirmation_code = confirmation_code
@@ -44,10 +50,10 @@ class UserEmailConfirmMixin(models.Model):
 
         return {"result": False, "message": "User with such email already exists"}
 
-    def check_confirmation_code(self, email_confirmation_code):
+    def check_email_confirmation_code(self, email_confirmation_code):
 
         time_is_up = (datetime.now(
-            timezone.utc) - self.updated_at).days > settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME
+            timezone.utc) - self.updated_at).days > CONFIRM_EMAIL_CODE_LIFE_TIME
 
         if time_is_up:
             return {"result": False, "message": "Code has expired"}
@@ -83,7 +89,7 @@ class EmailConfirm(models.Model):
             email_confirmation_instance = cls.objects.filter(email=email).first() or cls(
                 email=email)
 
-            confirmation_code = get_random_string(settings.GARPIX_CONFIRM_CODE_LENGTH, string.digits)
+            confirmation_code = get_random_string(CONFIRM_CODE_LENGTH, string.digits)
             email_confirmation_instance.email_confirmation_code = confirmation_code
             email_confirmation_instance.token = uuid4()
 
@@ -111,7 +117,7 @@ class EmailConfirm(models.Model):
             return {"result": False, "message": "Code or email is incorrect"}
 
         time_is_up = (datetime.now(
-            timezone.utc) - email_confirmation_instance.updated_at).seconds / 60 > settings.GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME
+            timezone.utc) - email_confirmation_instance.updated_at).seconds / 60 > CONFIRM_EMAIL_CODE_LIFE_TIME
 
         if time_is_up:
             return {"result": False, "message": "Code has expired"}
@@ -131,3 +137,6 @@ class EmailConfirm(models.Model):
     class Meta:
         verbose_name = 'Код подтверждения по email'
         verbose_name_plural = 'Коды подтверждения по email'
+        if not hasattr(settings,
+                       'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') or not settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
+            abstract = True

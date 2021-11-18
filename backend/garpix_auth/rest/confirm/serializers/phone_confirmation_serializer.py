@@ -7,7 +7,7 @@ class PhoneConfirmSendSerializer(serializers.Serializer):
 
 
 class PhoneConfirmCheckCodeSerializer(serializers.Serializer):
-    phone_confirmation_code = serializers.models.CharField(max_length=15)
+    phone_confirmation_code = serializers.CharField(max_length=15)
 
 
 class PhonePreConfirmSendSerializer(serializers.Serializer):
@@ -16,9 +16,9 @@ class PhonePreConfirmSendSerializer(serializers.Serializer):
 
 class PhonePreConfirmCheckCodeSerializer(serializers.Serializer):
     phone = PhoneNumberField()
-    phone_confirmation_code = serializers.models.CharField(max_length=15)
+    phone_confirmation_code = serializers.CharField(max_length=15)
 
 
 class PhonePreConfirmCheckSerializer(serializers.Serializer):
     phone = PhoneNumberField()
-    token = serializers.models.CharField(max_length=40)
+    token = serializers.CharField(max_length=40)

@@ -1,11 +1,10 @@
-from django.db.models import Choices
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 
-CODE_TYPES = Choices(
+CODE_TYPES = [
     ('EMAIL', 'Email'),
     ('PHONE', 'Phone')
-)
+]
 
 
 class ChoiceField(serializers.ChoiceField):
@@ -39,11 +38,11 @@ class RestoreByPhoneSerializer(serializers.Serializer):
 
 class RestoreSetPasswordByEmailSerializer(serializers.Serializer):
     restore_value = serializers.EmailField(required=True)
-    confirmation_code = serializers.models.CharField(max_length=15, required=True)
+    confirmation_code = serializers.CharField(max_length=15, required=True)
     new_password = serializers.CharField(max_length=255, required=True)
 
 
 class RestoreSetPasswordByPhoneSerializer(serializers.Serializer):
     restore_value = PhoneNumberField(required=True)
-    confirmation_code = serializers.models.CharField(max_length=15, required=True)
+    confirmation_code = serializers.CharField(max_length=15, required=True)
     new_password = serializers.CharField(max_length=255, required=True)
