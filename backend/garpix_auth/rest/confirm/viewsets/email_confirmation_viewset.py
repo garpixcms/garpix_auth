@@ -34,7 +34,7 @@ class EmailConfirmationViewSet(viewsets.ViewSet):
             result = user.send_email_confirmation_code(email)
         else:
             if hasattr(settings,
-                           'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
+                       'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
                 serializer = EmailPreConfirmSendSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
                 result = EmailConfirm().send_confirmation_code(serializer.data['email'])
@@ -51,7 +51,7 @@ class EmailConfirmationViewSet(viewsets.ViewSet):
             result = user.check_email_confirmation_code(serializer.data['email_confirmation_code'])
         else:
             if hasattr(settings,
-                           'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
+                       'GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION:
                 serializer = EmailPreConfirmCheckCodeSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
                 result = EmailConfirm().check_confirmation_code(serializer.data['email'],

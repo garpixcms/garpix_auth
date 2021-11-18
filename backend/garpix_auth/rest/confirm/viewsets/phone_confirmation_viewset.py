@@ -15,7 +15,6 @@ from garpix_auth.rest.confirm.serializers.phone_confirmation_serializer import (
 User = get_user_model()
 
 
-
 class PhoneConfirmationViewSet(viewsets.ViewSet):
 
     def get_serializer_class(self):
@@ -35,7 +34,7 @@ class PhoneConfirmationViewSet(viewsets.ViewSet):
             result = user.send_phone_confirmation_code(phone)
         else:
             if hasattr(settings,
-                           'GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION:
+                       'GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION:
                 serializer = PhonePreConfirmSendSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
                 result = PhoneConfirm().send_confirmation_code(serializer.data['phone'])
@@ -52,7 +51,7 @@ class PhoneConfirmationViewSet(viewsets.ViewSet):
             result = user.check_phone_confirmation_code(serializer.data['phone_confirmation_code'])
         else:
             if hasattr(settings,
-                           'GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION:
+                       'GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION') and settings.GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION:
                 serializer = PhonePreConfirmCheckCodeSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
                 result = PhoneConfirm().check_confirmation_code(serializer.data['phone'],
