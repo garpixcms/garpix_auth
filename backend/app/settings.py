@@ -14,6 +14,11 @@ import os
 from pathlib import Path
 from environs import Env
 
+from garpix_auth.settings import EMAIL_CONFIRMATION_EVENT, EMAIL_CONFIRMATION_EVENT_ITEM  # noqa
+from garpix_auth.settings import PHONE_CONFIRMATION_EVENT, PHONE_CONFIRMATION_EVENT_ITEM  # noqa
+from garpix_auth.settings import EMAIL_RESTORE_PASSWORD_EVENT, EMAIL_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+from garpix_auth.settings import PHONE_RESTORE_PASSWORD_EVENT, PHONE_RESTORE_PASSWORD_EVENT_ITEM  # noqa
+
 env = Env()
 env.read_env()
 
@@ -22,6 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+SITE_URL = os.getenv('SITE_URL')
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -46,7 +53,6 @@ DEBUG = env.bool('DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -65,6 +71,9 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
+    # for notify
+    'fcm_django',
+    'garpix_notify'
 ]
 
 MIDDLEWARE = [
@@ -99,7 +108,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -113,7 +121,6 @@ DATABASES = {
         'PORT': env.int('POSTGRES_PORT'),
     },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -132,7 +139,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -191,4 +197,23 @@ GARPIX_REFRESH_TOKEN_TTL_SECONDS = 0  # infinity
 
 MIGRATION_MODULES = {
     'garpix_auth': 'app.migrations.garpix_auth',
+    'garpix_notify': 'app.migrations.garpix_notify',
 }
+
+NOTIFY_EVENTS = {}
+
+NOTIFY_EVENTS.update(PHONE_CONFIRMATION_EVENT_ITEM)
+NOTIFY_EVENTS.update(EMAIL_CONFIRMATION_EVENT_ITEM)
+
+NOTIFY_EVENTS.update(PHONE_RESTORE_PASSWORD_EVENT_ITEM)
+NOTIFY_EVENTS.update(EMAIL_RESTORE_PASSWORD_EVENT_ITEM)
+
+CHOICES_NOTIFY_EVENT = [(k, v['title']) for k, v in NOTIFY_EVENTS.items()]
+
+GARPIX_CONFIRM_CODE_LENGTH = 6
+GARPIX_CONFIRM_PHONE_CODE_LIFE_TIME = 5  # in minutes
+GARPIX_CONFIRM_EMAIL_CODE_LIFE_TIME = 2  # in days
+
+GARPIX_USE_PREREGISTRATION_PHONE_CONFIRMATION = False
+
+GARPIX_USE_PREREGISTRATION_EMAIL_CONFIRMATION = False

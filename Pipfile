@@ -19,6 +19,9 @@ django-oauth-toolkit = "*"
 social-auth-app-django = "*"
 django-rest-framework-social-oauth2 = "*"
 garpix-qa = "*"
+django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
+garpix-notify = "*"
+garpix-utils = "*"
 
 [dev-packages]
 
