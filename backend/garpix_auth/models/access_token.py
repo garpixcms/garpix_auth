@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 class AccessToken(models.Model):
     key = models.CharField(_("Key"), max_length=40, primary_key=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name='access_token',
+        settings.AUTH_USER_MODEL, related_name='access_tokens',
         on_delete=models.CASCADE, verbose_name=_("User")
     )
     created = models.DateTimeField(_("Created"), auto_now_add=True)
