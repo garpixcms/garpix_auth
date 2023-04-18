@@ -1,4 +1,4 @@
-from rest_framework import parsers, renderers
+from rest_framework import parsers, renderers, permissions
 from ..models.access_token import AccessToken as Token
 from .auth_token_serializer import AuthTokenSerializer
 from rest_framework.response import Response
@@ -9,7 +9,7 @@ from ..models.refresh_token import RefreshToken
 
 class ObtainAuthToken(APIView):
     throttle_classes = ()
-    permission_classes = ()
+    permission_classes = (permissions.IsAuthenticated,)
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
     renderer_classes = (renderers.JSONRenderer,)
     serializer_class = AuthTokenSerializer

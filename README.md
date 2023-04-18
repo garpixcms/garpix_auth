@@ -114,6 +114,18 @@ urlpatterns = [
 ]
 ```
 
+You can override the Bearer authorization header by `GARPIX_REST_AUTH_HEADER_KEY` setting:
+
+```python
+# settings.py
+
+# ...
+
+GARPIX_REST_AUTH_HEADER_KEY = 'HTTP_BEARER_AUTHORIZATION'
+```
+
+Now you need to add `Bearer-Authorization` header instead of `Authorization` header with your Bearer token to all requests.
+
 See `garpix_auth/tests/test_api.py` for examples.
 
 # Changelog
