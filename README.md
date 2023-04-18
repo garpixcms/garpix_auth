@@ -114,6 +114,23 @@ urlpatterns = [
 ]
 ```
 
+You can override the Bearer authorization header by `GARPIX_REST_AUTH_HEADER_KEY` setting.
+And also allow this custom header for cors-headers:
+```python
+# settings.py
+
+# ...
+from corsheaders.defaults import default_headers
+
+GARPIX_REST_AUTH_HEADER_KEY = 'HTTP_BEARER_AUTHORIZATION'
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "Bearer-Authorization",
+]
+```
+
+Now you need to add `Bearer-Authorization` header instead of `Authorization` header with your Bearer token to all requests.
+
 See `garpix_auth/tests/test_api.py` for examples.
 
 # Changelog
