@@ -9,7 +9,7 @@ from ..models.refresh_token import RefreshToken
 
 class ObtainAuthToken(APIView):
     throttle_classes = ()
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = ()
     parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
     renderer_classes = (renderers.JSONRenderer,)
     serializer_class = AuthTokenSerializer
